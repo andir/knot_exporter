@@ -5,10 +5,16 @@ from enum import IntEnum
 
 import argparse
 import http.server
+import socket
 
 from prometheus_client.core import REGISTRY
 from prometheus_client.core import GaugeMetricFamily
 from prometheus_client.exposition import MetricsHandler
+
+
+class HTTPv6Server(http.server.HTTPServer):
+    address_family = socket.AF_INET6
+
 
 CTL_ALLOC = None
 CTL_FREE = None
@@ -490,7 +496,7 @@ if __name__ == '__main__':
         args.knot_socket_timeout,
     ))
 
-    httpd = http.server.HTTPServer(
+    httpd = HTTPv6Server(
         (args.web_listen_addr, args.web_listen_port),
         MetricsHandler,
     )
